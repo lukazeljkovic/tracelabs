@@ -1,50 +1,42 @@
-import React, { useState, useEffect } from 'react';
 
-function Table({adress, blockNumber, isLoading}) {
+import { Alert, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
 
-    const [data, setData] = useState([]);
 
-  useEffect(() => {
-    fetchData();
-  }, []);
+function ETCTable({data, isLoading, isOkAdress}) {
 
-  
+    const [rowData, setRowData] = useState(rows);
+    const [orderDirection, setOrderDirection] = useState("asc");
 
-  const fetchData = async () => {
-    try {
-      const response = await fetch(`https://api.etherscan.io/api?module=account&action=txlist&address=${adress}&startblock=0&endblock=99999999&page=1&offset=10&sort=asc&apikey=VSDA8WCYWRNHDDRBE4MHX8SAMUWR17JBYM`);
-      console.log(adress);
-      const json = await response.json();
-      setData(json.result);
-    } catch (error) {
-      console.error(error);
-    }
-  };
   if(!isLoading) return <div>is Loading</div>
+  if (!isOkAdress) return <Alert severity="warning">Invalid adress format, please check that you entered the right adress!</Alert>
   return (
-    <table>
-      <thead>
-        <tr>
-          <th>Transaction hash</th>
-          <th>Block</th>
-          <th>Time Stamp</th>
-          <th>From</th>
-          <th>Value</th>
-        </tr>
-      </thead>
-      <tbody>
-        {data.map((item) => (
-          <tr key={item.hash}>
-            <td>{item.hash}</td>
-            <td>{item.blockNumber}</td>
-            <td>{item.timeStamp}</td>
-            <td>{item.from}</td>
-            <td>{item.value}</td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
+    <TableContainer component={Paper}>
+     <Table aria-label="simple table">
+       <TableHead>
+         <TableRow>
+           <TableCell align="center">Transaction hash</TableCell>
+           <TableCell align="center">Block</TableCell>
+           <TableCell align="center">Date</TableCell>
+           <TableCell align="center">From</TableCell>
+           <TableCell align="center">Value</TableCell>
+         </TableRow>
+       </TableHead>
+       <TableBody>
+         {data.map((item) => (
+           <TableRow key={item.hash}>
+             
+             <TableCell align="center">{item.hash}</TableCell>
+             <TableCell align="center">{item.blockNumber}</TableCell>
+             <TableCell align="center">{item.timeStamp}</TableCell>
+             <TableCell align="center">{item.from}</TableCell>
+             <TableCell align="center">{item.value}</TableCell>
+           </TableRow>
+         ))}
+       </TableBody>
+     </Table>
+   </TableContainer>
   )
 }
 
-export default Table
+export default ETCTable
+
